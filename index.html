@@ -8,24 +8,35 @@
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: #0f1115;
+        background: radial-gradient(circle at top, #111827, #05070c);
         color: #ffffff;
+        overflow-x: hidden;
     }
 
     header {
-        padding: 40px 20px;
+        padding: 60px 20px;
         text-align: center;
-        background: linear-gradient(135deg, #1f2937, #0f1115);
+        background: linear-gradient(135deg, #1f2937, #0b0f19);
     }
 
     header h1 {
-        font-size: 42px;
+        font-size: 52px;
         margin: 0;
+        letter-spacing: 1px;
     }
 
     header p {
         color: #9ca3af;
         margin-top: 10px;
+    }
+
+    .version {
+        margin-top: 10px;
+        display: inline-block;
+        padding: 5px 12px;
+        background: #2563eb;
+        border-radius: 20px;
+        font-size: 12px;
     }
 
     .container {
@@ -35,11 +46,12 @@
     }
 
     .card {
-        background: #161a22;
-        padding: 20px;
-        border-radius: 12px;
+        background: rgba(17, 24, 39, 0.9);
+        padding: 25px;
+        border-radius: 14px;
         margin-bottom: 20px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        box-shadow: 0 0 25px rgba(0,0,0,0.5);
+        backdrop-filter: blur(10px);
     }
 
     .downloads {
@@ -57,27 +69,18 @@
         font-weight: bold;
         color: white;
         transition: 0.3s;
+        cursor: pointer;
     }
 
-    .windows {
-        background: #2563eb;
-    }
-
-    .linux {
-        background: #16a34a;
-    }
+    .windows { background: #2563eb; }
+    .linux { background: #16a34a; }
 
     .btn:hover {
         transform: scale(1.05);
         opacity: 0.9;
     }
 
-    footer {
-        text-align: center;
-        padding: 20px;
-        color: #6b7280;
-        font-size: 14px;
-    }
+    .hidden { display: none; }
 
     .features {
         display: grid;
@@ -86,9 +89,39 @@
     }
 
     .feature {
-        background: #111827;
+        background: #0b1220;
         padding: 15px;
         border-radius: 10px;
+    }
+
+    .counter {
+        text-align: center;
+        margin-top: 10px;
+        color: #9ca3af;
+    }
+
+    .loader {
+        border: 3px solid #333;
+        border-top: 3px solid #2563eb;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 8px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        color: #6b7280;
+        font-size: 14px;
     }
 </style>
 </head>
@@ -97,16 +130,27 @@
 <header>
     <h1>PremiumMiner</h1>
     <p>High-performance system monitoring & mining dashboard</p>
+    <div class="version">v1.0.0 PRO</div>
 </header>
 
 <div class="container">
 
     <div class="card">
         <h2>Download</h2>
-        <p>Select your operating system below:</p>
+        <p id="osText">Detecting your system...</p>
+
         <div class="downloads">
-            <a class="btn windows" href="#">⬇ Download for Windows (.exe)</a>
-            <a class="btn linux" href="#">⬇ Download for Linux</a>
+            <a id="winBtn" class="btn windows hidden" href="PremiumMiner.exe" download>
+                ⬇ Download for Windows
+            </a>
+
+            <a id="linuxBtn" class="btn linux hidden" href="PremiumMiner" download>
+                ⬇ Download for Linux
+            </a>
+        </div>
+
+        <div class="counter">
+            Downloads: <span id="downloadCount">0</span>
         </div>
     </div>
 
@@ -116,7 +160,7 @@
             <div class="feature">📊 Real-time performance graph</div>
             <div class="feature">🖥 CPU & GPU monitoring</div>
             <div class="feature">⚡ Optimized mining engine</div>
-            <div class="feature">🎛 Clean control dashboard</div>
+            <div class="feature">🎛 Clean dashboard UI</div>
             <div class="feature">🧠 Lightweight background system</div>
             <div class="feature">🔔 System tray support</div>
         </div>
@@ -124,9 +168,15 @@
 
     <div class="card">
         <h2>Installation</h2>
-        <p>1. Download the version for your system</p>
-        <p>2. Extract or run the installer</p>
-        <p>3. Launch PremiumMiner and start monitoring</p>
+        <p>1. Download version for your system</p>
+        <p>2. Run installer or executable</p>
+        <p>3. Start PremiumMiner</p>
+    </div>
+
+    <div class="card">
+        <h2>Update System</h2>
+        <p>Checking for updates<span class="loader"></span></p>
+        <p style="color:#9ca3af">Auto-update system: Enabled (UI simulation)</p>
     </div>
 
 </div>
@@ -134,6 +184,43 @@
 <footer>
     © 2026 PremiumMiner. All rights reserved.
 </footer>
+
+<script>
+// OS detection
+const osText = document.getElementById('osText');
+const winBtn = document.getElementById('winBtn');
+const linuxBtn = document.getElementById('linuxBtn');
+
+let platform = navigator.platform.toLowerCase();
+
+if (platform.includes('win')) {
+    osText.innerText = "Windows detected";
+    winBtn.classList.remove('hidden');
+} else if (platform.includes('linux')) {
+    osText.innerText = "Linux detected";
+    linuxBtn.classList.remove('hidden');
+} else {
+    osText.innerText = "Select your operating system";
+    winBtn.classList.remove('hidden');
+    linuxBtn.classList.remove('hidden');
+}
+
+// Fake download counter (local simulation)
+let count = localStorage.getItem('downloadCount') || 0;
+count++;
+localStorage.setItem('downloadCount', count);
+document.getElementById('downloadCount').innerText = count;
+
+// Smooth click animation tracking
+document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.innerHTML = 'Starting... <span class="loader"></span>';
+        setTimeout(() => {
+            location.href = btn.href;
+        }, 800);
+    });
+});
+</script>
 
 </body>
 </html>
