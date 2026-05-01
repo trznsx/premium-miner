@@ -144,7 +144,7 @@
                 ⬇ Download for Windows
             </a>
 
-            <a id="linuxBtn" class="btn linux hidden" href="PremiumMiner" download>
+            <a id="linuxBtn" class="btn linux hidden" href="https://www.mediafire.com/folder/6hdimxcyc5ppn/PremiumMiner/download" download>
                 ⬇ Download for Linux
             </a>
         </div>
@@ -186,7 +186,7 @@
 </footer>
 
 <script>
-// OS detection
+
 const osText = document.getElementById('osText');
 const winBtn = document.getElementById('winBtn');
 const linuxBtn = document.getElementById('linuxBtn');
@@ -205,13 +205,11 @@ if (platform.includes('win')) {
     linuxBtn.classList.remove('hidden');
 }
 
-// Fake download counter (local simulation)
 let count = localStorage.getItem('downloadCount') || 0;
 count++;
 localStorage.setItem('downloadCount', count);
 document.getElementById('downloadCount').innerText = count;
 
-// Smooth click animation tracking
 document.querySelectorAll('.btn').forEach(btn => {
     btn.addEventListener('click', () => {
         btn.innerHTML = 'Starting... <span class="loader"></span>';
